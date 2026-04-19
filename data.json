@@ -872,7 +872,6 @@
       "titel": "Glasgow Coma Scale (GCS)",
       "tags": [
         "VH",
-        "F"
         "Neurologie"
       ],
       "inhalt": "Formel: GCS = Augen (E) + Sprache (V) + Motorik (M) · Maximum 15\n\nAugen (E):\n4 = spontan · 3 = auf Ansprache · 2 = auf Schmerzreiz · 1 = keine\n\nSprache (V):\n5 = orientiert · 4 = verwirrt · 3 = Wortsalat · 2 = unverständlich · 1 = keine\n\nMotorik (M):\n6 = Aufforderung befolgt · 5 = gezielte Abwehr · 4 = ungezielte Abwehr\n3 = Beugebewegungen · 2 = Streckbewegungen · 1 = keine\n\nInterpretation:\n15 = normal · 13–14 = leicht · 9–12 = mittelschwer\n≤8 = schwer → Atemweg sichern! · 3 = tiefes Koma\n\nHinweis: Bei Intubation verbale Komponente als »Vt« dokumentieren."

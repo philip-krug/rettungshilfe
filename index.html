@@ -520,289 +520,10 @@
 </div>
 
 <script>
-// ── DATEN ──────────────────────────────────────────────────────────────────────
-const DATA = {
-  einsaetze: [
-    {
-      id: "VH", label: "Voraushelfer", kurz: "VH",
-      icon: "🚑", iconKlasse: "icon-vh",
-      fahrzeug: "ELW 1 – Florian Messel 01/11-01",
-      positionen: [
-        {
-          id: "ALLE", label: "Alle / Überblick",
-          aufgaben: [
-            // 4-S-Regel (nr 100–103)
-            { nr: 100, text: "SICHERN – Gefahren erkennen, Warnweste an, Einsatzstelle absichern", merksatz: "Erst sichern – dann helfen" },
-            { nr: 101, text: "SICHTEN – Anzahl Patienten, Verletzungsmuster, Unfallmechanismus erfassen", merksatz: null },
-            { nr: 102, text: "SPRECHEN – Patient laut ansprechen: »Hallo! Können Sie mich hören?« + Notruf 112", merksatz: "5 W: WO · WAS · WIE VIELE · WIE · WARTEN" },
-            { nr: 103, text: "SCHÜTZEN – Rettungsdecke, Umstehende fernhalten, Hypothermie verhindern", merksatz: null },
-            // 4-Sekunden-Regel (nr 104)
-            { nr: 104, text: "4-Sekunden-Eindruck: Aussehen → Atmung → Haut → Bewusstsein", merksatz: "Hinschauen vor Anfassen" },
-            // Einsatzstelle – Situation – Sicherheit (nr 1–5)
-            { nr: 1,  text: "Schutzausrüstung vollständig anlegen", merksatz: "Eigenschutz geht vor" },
-            { nr: 2,  text: "Gefahren an der Einsatzstelle erkennen und absichern", merksatz: null },
-            { nr: 3,  text: "Anzahl Verletzte / Betroffene erfassen", merksatz: null },
-            { nr: 4,  text: "Einwirkende Kräfte und Verletzungsmechanismus beurteilen", merksatz: null },
-            { nr: 5,  text: "Notruf 112 – Lagemeldung – Nachforderung wenn nötig", merksatz: "5 W: WO · WAS · WIE VIELE · WIE · WARTEN" },
-            // Ersteinschätzung schnelles ABC (nr 6–11)
-            { nr: 6,  text: "Gesamteindruck: Bewusstsein, lebensbedrohliche Verletzung?", merksatz: null },
-            { nr: 7,  text: "Bewusstsein prüfen: WASB – W=Wach · A=Ansprechbar · S=Somnolent · B=Bewusstlos", merksatz: null },
-            { nr: 8,  text: "Reanimationspflichtig? → sofort HLW beginnen", merksatz: "Keine Atmung = sofort 30:2" },
-            { nr: 9,  text: "Puls am Handgelenk tasten, Nagelbettprobe (Rekapillarisierung < 2 Sek.?)", merksatz: null },
-            { nr: 10, text: "Hautfarbe und Temperatur beurteilen", merksatz: null },
-            { nr: 11, text: "Lebensbedrohliche Blutung? → sofort stillen (Tourniquet / Druckverband)", merksatz: "Kritischer Patient → Zeit vor Ort max. 15 min!" },
-            // cABCDE (nr 12–17)
-            { nr: 12, text: "c – Kritische Blutung stoppen: Tourniquet, Druckverband, Wundpacking", merksatz: null },
-            { nr: 13, text: "A – Atemweg: Inspektion, Esmarch-Handgriff, ggf. Guedel-/Wendl-Tubus", merksatz: null },
-            { nr: 14, text: "B – Atmung: Frequenz, Tiefe, SpO₂, Thorax-Inspektion – O₂-Gabe", merksatz: "Keine Atmung → sofort HLW" },
-            { nr: 15, text: "C – Kreislauf: Puls (Qualität, Frequenz), Rekapillarisierung, Hautkolorit, RR", merksatz: null },
-            { nr: 16, text: "D – Neurologie: GCS, Pupillen (Weite, Seitengleichheit, Lichtreaktion), Blutzucker", merksatz: "GCS ≤ 8 → Atemweg sichern" },
-            { nr: 17, text: "E – Entkleiden: Gesamten Körper inspizieren, Hypothermie verhindern (Rettungsdecke)", merksatz: null },
-            // Übergabe (nr 18–19)
-            { nr: 18, text: "Leitstelle informieren: Lagemeldung, Patientenzustand, ggf. Nachforderung", merksatz: null },
-            { nr: 19, text: "Übergabe an RD mit SAMPLE: S=Symptome · A=Allergien · M=Medikamente · P=Vorerkrankungen · L=Auslöser · E=Letzte Mahlzeit", merksatz: null },
-            // BE-FAST Schlaganfall (nr 20–29)
-            { nr: 20, text: "BE-FAST – Schlaganfall prüfen:", merksatz: "B · E · F · A · S · T" },
-            { nr: 21, text: "B – Balance: Patient beobachten – Schwindel, Gangunsicherheit, Sturzneigung?", merksatz: null },
-            { nr: 22, text: "E – Eyes: »Sehen Sie klar? Doppelbilder?« – Sehstörung, Gesichtsfeldausfall?", merksatz: null },
-            { nr: 23, text: "F – Face: »Bitte lächeln Sie!« – Mundwinkel hängt einseitig ab?", merksatz: null },
-            { nr: 24, text: "A – Arms: »Beide Arme ausstrecken, Augen zu, 10 Sekunden halten!« – Arm sinkt ab?", merksatz: null },
-            { nr: 25, text: "S – Speech: »Sagen Sie: Die Sonne scheint heute!« – verwaschen, falsch oder fehlend?", merksatz: null },
-            { nr: 26, text: "T – Time: Wann genau begannen die Symptome? Uhrzeit dokumentieren!", merksatz: "Zeitfenster Lyse: 4,5 Stunden" },
-            { nr: 27, text: "Mindestens 1 Zeichen positiv → Schlaganfall-Verdacht → sofort 112, Stroke Unit voranmelden", merksatz: "Zeit ist Hirn!" },
-            { nr: 28, text: "Lagerung: Oberkörper 30–45° hoch, sitzend – NICHT flach lagern", merksatz: "Aufrecht sitzen – nicht hinlegen!" },
-            { nr: 29, text: "Blutdruck NICHT senken – keine weitere Maßnahme – ruhig halten, wärmen, auf RD warten", merksatz: "Kein Eingriff in Blutdruck!" },
-            // Krampfanfall (nr 30–39)
-            { nr: 30, text: "Ruhe bewahren – Zeit stoppen, Anfallsdauer dokumentieren", merksatz: null },
-            { nr: 31, text: "Sturz verhindern – Patient sichern, zu Boden gleiten lassen", merksatz: null },
-            { nr: 32, text: "Umgebung sichern – gefährliche Gegenstände wegräumen", merksatz: null },
-            { nr: 33, text: "NICHT: Gegenstand in den Mund einführen · NICHT: festhalten · NICHT: alleine lassen", merksatz: null },
-            { nr: 34, text: "Nach dem Krampf: Stabile Seitenlage, O₂-Gabe, BZ messen, Vitalzeichen überwachen", merksatz: null },
-            { nr: 35, text: "0–5 min → abwarten · >5 min → Midazolam nasal/i.v. (5–10 mg) · >30 min → Notarzt!", merksatz: "Status epilepticus ab 30 min → Narkose/Intubation" },
-            { nr: 36, text: "Ursachensuche: Hypoglykämie · Hypoxie · Elektrolyte · Intoxikation · Trauma · Fieber · Eklampsie", merksatz: null },
-            { nr: 37, text: "Immer einweisen bei: Erster Anfall · >5 min · kein Wiedererlangen des Bewusstseins · Kind · Trauma · Schwangerschaft", merksatz: null },
-            { nr: 38, text: "Dokumentieren: Anfallsbeginn/-ende, Typ, Bewusstseinslage, postiktale Phase, Medikamente mit Uhrzeit", merksatz: null },
-            // SAMPLE & OPQRST (nr 40–49)
-            { nr: 40, text: "SAMPLE – Notfallanamnese:", merksatz: "S=Symptome · A=Allergien · M=Medikamente · P=Vorerkrankungen · L=Auslöser · E=Letzte Mahlzeit" },
-            { nr: 41, text: "S – Symptome: Was hat der Patient aktuell?", merksatz: null },
-            { nr: 42, text: "A – Allergien: Bekannte Allergien auf Medikamente oder Stoffe?", merksatz: null },
-            { nr: 43, text: "M – Medikamente: Was nimmt der Patient ein?", merksatz: null },
-            { nr: 44, text: "P – Patientengeschichte: Vorerkrankungen, frühere Ereignisse?", merksatz: null },
-            { nr: 45, text: "L – Auslöser: Was hat das Ereignis ausgelöst? War es bewusst?", merksatz: null },
-            { nr: 46, text: "E – Letzte Mahlzeit: Wann und was gegessen/getrunken? Zusammenhang?", merksatz: null },
-            { nr: 47, text: "OPQRST – Schmerzanamnese:", merksatz: "O=Onset · P=Provokation · Q=Qualität · R=Region · S=Stärke · T=Time" },
-            { nr: 48, text: "O=Beginn · P=Auslöser · Q=Art des Schmerzes (stechend, dumpf, zerreißend?) · R=Wo, Ausstrahlung?", merksatz: null },
-            { nr: 49, text: "S=Schmerzskala 0–10 · T=Zeitlicher Verlauf, wann begonnen?", merksatz: null },
-            // GCS (nr 50–59)
-            { nr: 50, text: "GCS = Augen (E) + Sprache (V) + Motorik (M) · Maximum 15", merksatz: "≤8 = schwer → Atemweg sichern!" },
-            { nr: 51, text: "Augen (E): spontan=4 · auf Ansprache=3 · auf Schmerz=2 · keine=1", merksatz: null },
-            { nr: 52, text: "Sprache (V): orientiert=5 · verwirrt=4 · Wortsalat=3 · unverständlich=2 · keine=1", merksatz: null },
-            { nr: 53, text: "Motorik (M): Aufforderung=6 · gezielt=5 · ungezielt=4 · Beugen=3 · Strecken=2 · keine=1", merksatz: null },
-            { nr: 54, text: "15=normal · 13–14=leicht · 9–12=mittelschwer · ≤8=schwer · 3=tiefes Koma", merksatz: null },
-            // H's & HITS (nr 60–64)
-            { nr: 60, text: "H's: Hypovolämie · Hypoxie · Hypothermie · Hypo-/Hyperkaliämie · Hypoglykämie · H⁺-Azidose", merksatz: "Reversible Ursachen bei Herzstillstand immer parallel suchen!" },
-            { nr: 61, text: "HITS: Herzbeuteltamponade · Intoxikation · Thrombose Lunge · Thrombose Herz · Spannungspneumothorax", merksatz: null },
-            { nr: 62, text: "Diagnostik: Sono (FAST) · EKG · BGA · Anamnese/Umfeld", merksatz: "Ohne Ursachenbehandlung keine erfolgreiche Reanimation!" },
-            // i-gel (nr 65–69)
-            { nr: 65, text: "i-gel einsetzen wenn: Bewusstlos · kein Würgen/Schluckreflex · GCS ≤ 8 · Atemstillstand", merksatz: "Wenn der Patient es nicht mehr merkt → i-gel rein" },
-            { nr: 66, text: "NICHT einsetzen wenn: Patient wach · würgt · hustet", merksatz: null },
-            { nr: 67, text: "Größe: kräftig/groß → 5 · normal → 4 · klein/leicht → 3", merksatz: null }
-          ]
-        }
-      ]
-    },
-    {
-      id: "F", label: "Feuer", kurz: "F",
-      icon: "🔥", iconKlasse: "icon-f",
-      fahrzeug: "HLF 20/20 + TLF 16/25",
-      positionen: [
-        {
-          id: "MA", label: "Maschinist",
-          aufgaben: [
-            { nr: 1, text: "Fahrzeug günstig aufstellen: Windrichtung, Trümmerschatten, Zufahrt freihalten", merksatz: null },
-            { nr: 2, text: "Pumpe in Betrieb nehmen, Wasserversorgung aufbauen", merksatz: null },
-            { nr: 3, text: "Auf Befehl: Wasser marsch / Wasser halt", merksatz: null },
-            { nr: 4, text: "Beim Einsatz der Steckleiter: Schlauchtrupp beim Abladen und Aufstellen unterstützen", merksatz: null },
-            { nr: 5, text: "Stromerzeuger in Betrieb nehmen wenn befohlen", merksatz: null },
-            { nr: 6, text: "Fahrzeug und Gerät bewachen, einsatzbereit halten", merksatz: null }
-          ]
-        },
-        {
-          id: "A", label: "Angriffstrupp",
-          aufgaben: [
-            { nr: 1, text: "Atemschutzgeräte anlegen, Einsatzkurzprüfung durchführen", merksatz: null },
-            { nr: 2, text: "Auf Befehl: C-Strahlrohr und Schlauchhalter nehmen, zum Verteiler vorgehen", merksatz: null },
-            { nr: 3, text: "Schlauchleitung vom Verteiler in Richtung Einsatzstelle auslegen", merksatz: "Verteiler → Einsatzstelle" },
-            { nr: 4, text: "Menschenrettung hat Vorrang vor Brandbekämpfung", merksatz: "Retten – Löschen – Bergen – Schützen" },
-            { nr: 5, text: "Innenangriff nur zu zweit, nie alleine vorgehen", merksatz: null },
-            { nr: 6, text: "Rückmeldung an GF bei Lageänderung", merksatz: null }
-          ]
-        },
-        {
-          id: "W", label: "Wassertrupp",
-          aufgaben: [
-            { nr: 1, text: "Wasserentnahme aufbauen: Hydrant öffnen oder Saugleitung legen", merksatz: null },
-            { nr: 2, text: "B-Leitung vom Fahrzeug zum Verteiler legen", merksatz: null },
-            { nr: 3, text: "Auf Befehl: Verkehrsabsicherung mit Warndreieck, Warnleuchten, Kegel", merksatz: null },
-            { nr: 4, text: "Sicherheitstrupp nach FwDV 7 stellen wenn befohlen", merksatz: null }
-          ]
-        },
-        {
-          id: "S", label: "Schlauchtrupp",
-          aufgaben: [
-            { nr: 1, text: "Verteiler setzen – Befehl des GF abwarten", merksatz: null },
-            { nr: 2, text: "B-Leitung vom Fahrzeug zum Verteiler kuppeln und legen", merksatz: null },
-            { nr: 3, text: "C-Schlauchleitung zum Angriffstrupp verlängern", merksatz: "vom AT zum Verteiler koppeln" },
-            { nr: 4, text: "Bei Steckleiter: Maschinisten beim Abladen und Aufstellen unterstützen", merksatz: null },
-            { nr: 5, text: "Hydraulisches Gerät (Spreizer/Schere) für AT vorbereiten wenn befohlen", merksatz: "Gerät vorbereiten – AT übernimmt" }
-          ]
-        },
-        {
-          id: "ME", label: "Melder",
-          aufgaben: [
-            { nr: 1, text: "Beim GF bereithalten, auf Befehle warten", merksatz: null },
-            { nr: 2, text: "Erkundungsergebnisse an GF melden", merksatz: null },
-            { nr: 3, text: "Rettungsdienst und weitere Kräfte einweisen", merksatz: null },
-            { nr: 4, text: "Absperrung und Verkehrsregelung wenn befohlen", merksatz: null },
-            { nr: 5, text: "Feuerwehrplan / Objektunterlagen beschaffen wenn vorhanden", merksatz: null }
-          ]
-        }
-      ]
-    },
-    {
-      id: "VU", label: "Verkehrsunfall", kurz: "VU",
-      icon: "🚗", iconKlasse: "icon-vu",
-      fahrzeug: "HLF 20/20 – Florian Messel 01/46-01",
-      positionen: [
-        {
-          id: "MA", label: "Maschinist",
-          aufgaben: [
-            { nr: 1, text: "Fahrzeug im Trümmerschatten aufstellen, Zufahrt für RD freihalten", merksatz: null },
-            { nr: 2, text: "Stromerzeuger und Beleuchtung in Betrieb nehmen", merksatz: null },
-            { nr: 3, text: "Schnellangriff / C-Rohr für Brandschutz bereitstellen", merksatz: "Brandschutz sofort sicherstellen" },
-            { nr: 4, text: "Schlauchtrupp beim Aufbau des Rettungsgeräts unterstützen", merksatz: null }
-          ]
-        },
-        {
-          id: "A", label: "Angriffstrupp",
-          aufgaben: [
-            { nr: 1, text: "AUTO-Regel – Fahrzeug erkunden auf alternative Antriebstechnik:", merksatz: "A = Austretende Betriebsstoffe · U = Unterboden erkunden · T = Tankdeckel öffnen · O = Oberfläche absuchen", wikiId: "AUTO" },
-            { nr: 2, text: "AIRBAG-Regel – Sicherheitssysteme beachten:", merksatz: "A = Abstand halten · I = Innenraum erkunden · R = Rettungskräfte warnen · B = Batteriemanagement · A = Abnehmen Innenverkleidung · G = Gefahren an Komponenten", wikiId: "AIRBAG" },
-            { nr: 3, text: "Sicherheitsabstände: 30 cm Seitenairbag · 60 cm Fahrerairbag · 90 cm Beifahrerairbag", merksatz: null },
-            { nr: 4, text: "Patientenkontakt herstellen: Ansprechen, Erstbeurteilung", merksatz: null },
-            { nr: 5, text: "cABCDE-Schema anwenden", merksatz: "c · A · B · C · D · E", wikiId: "cABCDE" },
-            { nr: 6, text: "Rettungsdatenblatt suchen: Sonnenblende Fahrerseite oder QR-Code", merksatz: null },
-            { nr: 7, text: "Hydraulisches Rettungsgerät einsetzen wenn vom GF befohlen", merksatz: null },
-            { nr: 8, text: "Übergabe an Rettungsdienst mit SAMPLER", merksatz: null, wikiId: "SAMPLE" }
-          ]
-        },
-        {
-          id: "W", label: "Wassertrupp",
-          aufgaben: [
-            { nr: 1, text: "Unfallstelle absichern: Warndreieck, Warnleuchten, Kegel aufstellen", merksatz: "ERST absichern – dann Fahrzeug sichern" },
-            { nr: 2, text: "Fahrzeug gegen Wegrollen sichern: Unterlegkeile, Fahrzeugbremse", merksatz: null },
-            { nr: 3, text: "Fahrzeug stabilisieren: Unterstellböcke, Keile", merksatz: null },
-            { nr: 4, text: "Brandschutz: C-Rohr oder Schnellangriff bereithalten", merksatz: null }
-          ]
-        },
-        {
-          id: "S", label: "Schlauchtrupp",
-          aufgaben: [
-            { nr: 1, text: "Hydraulisches Rettungsgerät (Spreizer/Schere/Zylinder) vom HLF nehmen und bereitstellen", merksatz: "Gerät vorbereiten – AT übernimmt" },
-            { nr: 2, text: "Glasmanagement: Fahrzeugscheiben nach Anweisung entfernen", merksatz: null },
-            { nr: 3, text: "Patientenschutz sicherstellen: Decke, Kantenschutz", merksatz: null },
-            { nr: 4, text: "Schlauchleitung für Brandschutz legen", merksatz: null }
-          ]
-        },
-        {
-          id: "ME", label: "Melder",
-          aufgaben: [
-            { nr: 1, text: "Rettungsdienst und Polizei einweisen", merksatz: null },
-            { nr: 2, text: "Verkehrsregelung unterstützen", merksatz: null },
-            { nr: 3, text: "Leitstelle über Lage informieren: Anzahl Patienten, Einklemmung ja/nein", merksatz: null },
-            { nr: 4, text: "Nachforderung melden wenn mehr als ein Fahrzeug oder Notarzt benötigt", merksatz: null }
-          ]
-        }
-      ]
-    },
-    {
-      id: "TH", label: "Technische Hilfe", kurz: "TH",
-      icon: "🔧", iconKlasse: "icon-th",
-      fahrzeug: "HLF 20/20 – Florian Messel 01/46-01",
-      positionen: [
-        {
-          id: "MA", label: "Maschinist",
-          aufgaben: [
-            { nr: 1, text: "Fahrzeug günstig aufstellen, Zufahrt freihalten", merksatz: null },
-            { nr: 2, text: "Stromerzeuger und Beleuchtung in Betrieb nehmen", merksatz: null },
-            { nr: 3, text: "Geräte auf Anforderung herausgeben und bereitstellen", merksatz: null }
-          ]
-        },
-        {
-          id: "A", label: "Angriffstrupp",
-          aufgaben: [
-            { nr: 1, text: "Erkundung: Lage erfassen, Einklemmung / Verletzungen einschätzen", merksatz: null },
-            { nr: 2, text: "Patientenkontakt herstellen, cABCDE anwenden", merksatz: null },
-            { nr: 3, text: "Technische Rettung nach Befehl des GF durchführen", merksatz: null },
-            { nr: 4, text: "Übergabe an Rettungsdienst", merksatz: null }
-          ]
-        },
-        {
-          id: "W", label: "Wassertrupp",
-          aufgaben: [
-            { nr: 1, text: "Einsatzstelle absichern und ausleuchten", merksatz: null },
-            { nr: 2, text: "Brandschutz sicherstellen: C-Rohr bereithalten", merksatz: null },
-            { nr: 3, text: "Sicherung von Lasten beim Hebevorgang", merksatz: null }
-          ]
-        },
-        {
-          id: "S", label: "Schlauchtrupp",
-          aufgaben: [
-            { nr: 1, text: "Rettungsgerät / Hebekissen / Säge vom HLF bereitstellen", merksatz: null },
-            { nr: 2, text: "Beim Angriffstrupp assistieren", merksatz: null },
-            { nr: 3, text: "Absicherung und Beleuchtung unterstützen", merksatz: null }
-          ]
-        },
-        {
-          id: "ME", label: "Melder",
-          aufgaben: [
-            { nr: 1, text: "Beim GF bereithalten, Leitstelle informieren", merksatz: null },
-            { nr: 2, text: "Rettungsdienst und weitere Kräfte einweisen", merksatz: null },
-            { nr: 3, text: "Nachforderung melden wenn erforderlich", merksatz: null }
-          ]
-        }
-      ]
-    }
-  ],
+// ── DATEN (werden per fetch aus data.json geladen) ───────────────────────────
+let DATA = null;
 
-  wiki: [
-    { id: "4S_regel",     titel: "4-S-Regel – Einsatzbeginn",          tags: ["VH","Einsatzbeginn"],   inhalt: "1. SICHERN: Gefahren erkennen, Schutzausrüstung anlegen, Einsatzstelle absichern\n2. SICHTEN: Anzahl Patienten, Verletzungsmuster, Unfallmechanismus erfassen\n3. SPRECHEN: Patient ansprechen + Notruf 112 (5 W's)\n4. SCHÜTZEN: Hypothermie verhindern, Rettungsdecke, Umstehende fernhalten\n\nMerksatz: Erst sichern – dann anfassen!" },
-    { id: "5W",           titel: "5 W – Notruf 112",                   tags: ["Notruf","Kommunikation"], inhalt: "WO ist der Notfall?\nWAS ist passiert?\nWIE VIELE Personen sind betroffen?\nWIE ist der Zustand der Verletzten?\nWARTEN auf Rückfragen der Leitstelle!\n\nGespräch NICHT auflegen bis die Leitstelle freigibt." },
-    { id: "AIRBAG",       titel: "AIRBAG-Regel – Sicherheitssysteme",  tags: ["VU","TH","Sicherheit"], inhalt: "Nicht ausgelöste Airbags sind Gefahr – immer vom Schlimmsten ausgehen!\n\nA = Abstand halten:\n  30 cm Seitenairbag · 60 cm Fahrerairbag · 90 cm Beifahrerairbag\nI = Innenraum erkunden: Welche Airbags ausgelöst? Was kann zum Geschoss werden?\nR = Rettungskräfte warnen: RD, Polizei über nicht ausgelöste Airbags informieren\nB = Batteriemanagement: Zündung aus, Batterie abklemmen wenn erreichbar\n  Achtung: Steuergerät hat oft autonome Stromversorgung!\nA = Abnehmen der Innenraumverkleidung: Gasgeneratoren sichtbar machen\nG = Gefahren an Komponenten: Gurtstraffer, Überrollbügel beachten\n\nNicht in Airbag-Komponenten oder Gasgeneratoren hineinschneiden!\nAusgelöste Airbag-Säcke dürfen gefahrlos zerschnitten werden." },
-    { id: "AUTO",         titel: "AUTO-Regel – Alternative Antriebe",  tags: ["VU","TH","Erkundung"],  inhalt: "Bei jedem VU-Einsatz: Fahrzeug auf alternative Antriebstechnik prüfen!\n\nA = Austretende Betriebsstoffe: Zischgeräusche, Gasgeruch, Lachenbildung?\nU = Unterboden erkunden: Gastanks, Hochvoltleitungen (orange), Batterien?\nT = Tankdeckel öffnen: QR-Code, mehrere Tankdeckel, alternative Betankung?\nO = Oberfläche absuchen: Kein Auspuff, Aufkleber, Überdruckventile?\n\nAUTO-Regel ergänzt das Rettungsdatenblatt – ersetzt es nicht!\nBei E-Fahrzeugen: Hochvoltsystem deaktivieren, orange Leitungen nicht berühren." },
-    { id: "BEFAST",       titel: "BE-FAST – Schlaganfall erkennen",     tags: ["VH","Schlaganfall"],    inhalt: "B = Balance: Patient beobachten – Schwindel, Gangunsicherheit, Sturzneigung?\nE = Eyes: »Sehen Sie klar? Doppelbilder?« – Sehstörung, Gesichtsfeldausfall?\nF = Face: »Bitte lächeln Sie!« – Mundwinkel hängt einseitig ab?\nA = Arms: »Beide Arme ausstrecken, Augen zu, 10 Sek. halten!« – Arm sinkt ab?\nS = Speech: »Sagen Sie: Die Sonne scheint heute!« – verwaschen, falsch, fehlend?\nT = Time: Symptombeginn genau erfragen! Uhrzeit dokumentieren!\n\nMindestens 1 Zeichen positiv → Schlaganfall-Verdacht!\nSofort 112 → Stroke Unit voranmelden\n\nLagerung: Oberkörper 30–45° hoch, sitzend – NICHT flach!\nBlutdruck NICHT senken – keine weitere Maßnahme\nZeitfenster Lyse: 4,5 Stunden" },
-    { id: "cABCDE",       titel: "cABCDE – Patientenuntersuchung",      tags: ["VH","VU","Patient"],    inhalt: "Reihenfolge einhalten – lebensbedrohliche Zustände zuerst!\n\nc = critical bleeding: Lebensbedrohliche Blutung sofort stoppen\n  → Tourniquet, Druckverband, Wundpacking, Hämostyptika\n\nA = Airway: Atemweg freimachen\n  → Inspektion, Esmarch-Handgriff, ggf. Guedel-/Wendl-Tubus\n\nB = Breathing: Atmung beurteilen\n  → Frequenz, Tiefe, SpO₂, Thorax-Inspektion\n  → O₂-Gabe, ggf. Thoraxdekompression\n\nC = Circulation: Kreislauf beurteilen\n  → Puls (Qualität, Frequenz), Rekapillarisierung, Hautkolorit, RR\n\nD = Disability: Neurologie\n  → GCS, Pupillen (Weite, Seitengleichheit, Lichtreaktion), Blutzucker\n\nE = Exposure: Entkleiden\n  → Gesamten Körper inspizieren, Hypothermie verhindern (Rettungsdecke)\n\nPriorität: c=1 · A=2 · B=3 · C=4 · D=5 · E=6\nSchema wird wiederholt durchlaufen (Reassessment)!" },
-    { id: "fahrzeuge",    titel: "Fahrzeuge – FF Messel",               tags: ["Fahrzeug","Übersicht"], inhalt: "01/11-01 · ELW 1 → Voraushelfer (Standard)\n01/19-01 · MTF → Mannschaftstransport\n01/22-01 · TLF 16/25 → Feuer / Waldbrand (Einsatzstelle)\n01/24-01 · TLF 24/50 → Feuer / Waldbrand (Pendelverkehr)\n01/46-01 · HLF 20/20 → TH, VU, Feuer (Hauptfahrzeug)\n01/51-01 · RW 1 → TH / VU (nur Nachalarmierung)" },
-    { id: "funkstatus",   titel: "Funkstatus",                          tags: ["Funk","Status"],        inhalt: "Status 1: Einsatzbereit auf Wache\nStatus 2: Einsatzbereit außerhalb Wache\nStatus 3: Wache verlassen / auf Anfahrt\nStatus 4: Ankunft am Einsatzort\nStatus 5: Sprechwunsch\nStatus 6: Nicht einsatzbereit\n\nHinweis: Statusnummern mit ILS Darmstadt-Dieburg abgleichen." },
-    { id: "GCS",          titel: "Glasgow Coma Scale (GCS)",            tags: ["VH","Neurologie"],      inhalt: "Formel: GCS = Augen (E) + Sprache (V) + Motorik (M) · Maximum 15\n\nAugen (E):\n4 = spontan · 3 = auf Ansprache · 2 = auf Schmerzreiz · 1 = keine\n\nSprache (V):\n5 = orientiert · 4 = verwirrt · 3 = Wortsalat · 2 = unverständlich · 1 = keine\n\nMotorik (M):\n6 = Aufforderung befolgt · 5 = gezielte Abwehr · 4 = ungezielte Abwehr\n3 = Beugebewegungen · 2 = Streckbewegungen · 1 = keine\n\nInterpretation:\n15 = normal · 13–14 = leicht · 9–12 = mittelschwer\n≤8 = schwer → Atemweg sichern! · 3 = tiefes Koma\n\nHinweis: Bei Intubation verbale Komponente als »Vt« dokumentieren." },
-    { id: "HITS",         titel: "H's & HITS – Ursachen Kreislaufstillstand", tags: ["VH","Reanimation"], inhalt: "Reversible Ursachen bei Herzstillstand immer parallel suchen!\n\nH's:\nHypovolämie · Hypoxie · Hypothermie · Hypo-/Hyperkaliämie · Hypoglykämie · H⁺-Azidose\n\nHITS (T's):\nHerzbeuteltamponade · Intoxikation · Thrombose Lunge · Thrombose Herz · Spannungspneumothorax\n\nDiagnostik parallel:\n→ Sono (FAST): Tamponade, Pneumothorax, Hypovolämie?\n→ EKG: Herzinfarkt, Hyperkaliämie?\n→ BGA: Azidose, Hypoxie, Elektrolyte?\n→ Anamnese: Intoxikation, Hypothermie, Trauma?\n\nOhne Behandlung der Grundursache keine erfolgreiche Reanimation!" },
-    { id: "HLW_erw",      titel: "HLW – Erwachsene",                   tags: ["Reanimation","CPR"],    inhalt: "1. Keine Atmung → sofort 112 rufen\n2. 30 Kompressionen: Mitte Brustkorb, 5–6 cm tief, 100–120/min\n3. 2 Beatmungen: Kopf überstrecken, Nase zu, in Mund blasen\n4. Rhythmus: 30:2 – nicht unterbrechen\n5. AED sofort einsetzen wenn verfügbar\n\nMerksatz: Hart und schnell drücken – nicht aufhören!" },
-    { id: "HLW_kind",     titel: "HLW – Kinder",                       tags: ["Reanimation","Kinder"], inhalt: "Zuerst 5 initiale Beatmungen, dann HLW!\n\nSäugling: 2 Daumen, Brustkorb umgreifen, 4 cm\nKleinkind (1–8 J.): 1 Handballen, 5 cm\nSchulkind (>8 J.): 2 Handballen, 5–6 cm\n\n1 Helfer: 30:2 · 2 Helfer: 15:2 · Frequenz: 100–120/min\n\nMerksatz: Beim Kind zuerst beatmen!" },
-    { id: "igel",         titel: "i-gel – Atemwegshilfe",              tags: ["VH","Atemweg","CPR"],   inhalt: "Einsetzen wenn:\n→ Bewusstlos\n→ Kein Würgen / kein Schluckreflex\n→ GCS ≤ 8\n→ Atemstillstand oder Ateminsuffizienz\n\nNicht einsetzen wenn:\n→ Patient wach / reagiert\n→ Würgt oder hustet\n\nGröße:\n→ Kräftig/groß → 5\n→ Normal → 4\n→ Klein/leicht → 3\n\nMerksatz: »Wenn der Patient es nicht mehr merkt → i-gel rein.«" },
-    { id: "krampfanfall",  titel: "Krampfanfall – Maßnahmen",          tags: ["VH","Krampf","Neurologie"], inhalt: "Während des Krampfes:\n→ Ruhe bewahren, Zeit stoppen\n→ Sturz verhindern, Umgebung sichern\n→ Nichts in den Mund einführen!\n→ Patient nicht festhalten\n→ O₂-Gabe, BZ messen\n\nNach dem Krampf:\n→ Stabile Seitenlage (Aspirationsschutz)\n→ Vitalzeichen überwachen\n\nMedikamente:\n0–5 min → abwarten\n>5 min → Midazolam nasal/i.v. (5–10 mg)\n>30 min → Status epilepticus → Notarzt!\n\nImmer einweisen bei:\nErster Anfall · Dauer >5 min · kein Wiedererlangen des Bewusstseins · Kind · Trauma · Schwangerschaft" },
-    { id: "leiter",       titel: "Leitern – Fahrzeuge & Einsatz",      tags: ["Leiter","Fahrzeug"],    inhalt: "Verlastung (PRÜFEN wo markiert):\nHLF 20/20 → Steckleiter 4-teilig (bestätigt)\nHLF 20/20 → Schiebleiter 3-teilig (PRÜFEN)\nTLF 16/25 → Schiebleiter (PRÜFEN)\n\nGrundsätze (FwDV 10):\n→ Mindestens 1 m über Austrittsstelle hinausragen\n→ Nie über Auflagepunkt hinaus besteigen\n→ Elektrische Freileitungen: Sicherheitsabstand!\n→ Nach Benutzung: Sichtprüfung" },
-    { id: "nachfordern",  titel: "Leitstelle / Nachfordern",           tags: ["Funk","Leitstelle"],    inhalt: "Leitstelle sofort informieren bei:\n→ Ankunft Einsatzort (Status 4)\n→ Lagemeldung: Patienten, Lage, Gefahren\n→ Jeder Lageänderung\n\nNachfordern sofort wenn:\n→ Herzstillstand / Reanimation\n→ Bewusstlosigkeit unbekannter Ursache\n→ Atemnot, Brustschmerz, Schlaganfall\n→ Mehrere Verletzte · Kind · Person eingeklemmt\n→ Keine Besserung · Lage eskaliert" },
-    { id: "OPQRST",       titel: "OPQRST – Schmerzanamnese",           tags: ["VH","Anamnese","Schmerz"], inhalt: "O = On-Set: Wann hat der Schmerz begonnen?\nP = Provokation: Was löst den Schmerz aus / lindert ihn?\nQ = Qualität: Wie fühlt sich der Schmerz an? (stechend, dumpf, zerreißend, brennend?)\nR = Region: Wo ist der Schmerz? Strahlt er aus?\nS = Stärke: Schmerzskala 0–10 (0=kein Schmerz, 10=stärkster vorstellbarer Schmerz)\nT = Time: Wie lange besteht der Schmerz? Zeitlicher Verlauf?" },
-    { id: "rettungsmodus",titel: "Rettungsmodus – Sofort / Schnell",   tags: ["VU","TH","Rettung"],    inhalt: "Sofortrettung:\n→ Bei unmittelbarer Lebensgefahr (Brand, Reanimation)\n→ Stabilisierung kann entfallen\n→ Absicherung + Brandschutz trotzdem immer!\n\nSchnelle Rettung:\n→ Schnellstmöglich unter Beachtung med. Aspekte\n→ Patient wenn möglich immobilisieren\n→ Zeitfenster mit RD abstimmen" },
-    { id: "SAMPLE",       titel: "SAMPLE – Notfallanamnese",           tags: ["VH","VU","Anamnese"],   inhalt: "S = Symptome: Was hat der Patient?\nA = Allergien: Bekannte Allergien?\nM = Medikamente: Was nimmt der Patient?\nP = Patientengeschichte (Vorerkrankungen)\nL = Auslöser: Ereignis bewusst? Was hat er zuletzt gemacht?\nE = Letzte Mahlzeit: Wann, was gegessen/getrunken? Zusammenhang?\n\nStrukturierte Anamnese → strukturierte Übergabe → rettet Leben." },
-    { id: "schock",       titel: "Schockformen – Erkennung & Maßnahmen", tags: ["VH","VU","Schock"],  inhalt: "Zeichen: blass · kalt · schweißig · schneller Puls · RR↓\n\nHypovolämisch: Blutung stoppen · Schocklagerung · Wärme · O₂\nKardiogen: OK hoch · O₂ · KEIN Volumen · Transport\nAnaphylaktisch: Adrenalin · Schocklagerung · O₂\nSeptisch: O₂ · Schocklagerung · Wärme · Transport\nNeurogen: HWS immob.! · Flachlagerung · O₂\nObstruktiv: Ursache behandeln · O₂ · Transport\n\nMerksatz: O₂, Lagerung, Wärme, Transport. Dann Ursache!" },
-    { id: "transport",    titel: "Transportlagerung – Übersicht",      tags: ["Transport","Lagerung"], inhalt: "OK hoch 30–45°: Herzinfarkt, Atemnot, Schlaganfall (bewusst)\nSitzend: Starke Atemnot – Position vom Patienten wählen lassen\nSchocklagerung (Beine hoch): Hypovolämisch, Anaphylaxie\n  NICHT bei: SHT, Wirbelsäule, kardiogenem Schock!\nStabile Seitenlage: Bewusstlos, Atmung vorhanden\nFlach / Vakuummatratze: Wirbelsäule, Polytrauma\nExtremitäten: ruhigstellen, polstern, erhöht lagern" },
-    { id: "WASB",         titel: "WASB – Bewusstseinsskala",           tags: ["VH","Bewusstsein","Neurologie"], inhalt: "W = Wach: Patient ist wach und ansprechbar\nA = Ansprechbar: Reagiert auf Ansprechen\nS = Somnolent: Reagiert nur auf Schmerzreiz\nB = Bewusstlos: Keine Reaktion\n\nSchnelle Einschätzung vor dem GCS – im Erst-Assessment einsetzen." },
-    { id: "waldbrand",    titel: "Waldbrand – Einsatzgrundsätze",      tags: ["Waldbrand","TLF"],      inhalt: "Fahrzeuge:\n→ TLF 16/25 (01/22-01): an der Einsatzstelle (stärkere Pumpe)\n→ TLF 24/50 (01/24-01): Wasser-Pendel-Verkehr\n\nSchutzkleidung: TH-Kleidung – KEINE Nomex!\n\nGrundsätze:\n→ Windrichtung beachten – nie dagegen arbeiten\n→ Fluchtweg immer freihalten\n→ Wasserbecken aufbauen\n→ Rückzug sofort wenn Feuer die Flanke überholt" }
-  ]
-};
-
-// ── STATE ──────────────────────────────────────────────────────────────────────
+// ── STATE  ──────────────────────────────────────────────────────────────────────
 let state = { screen: 'start', einsatzId: null, positionId: null };
 
 // ── RENDER ─────────────────────────────────────────────────────────────────────
@@ -1162,7 +883,23 @@ function aufgabeEl(a) {
 }
 
 // ── START ─────────────────────────────────────────────────────────────────────
-render();
+// Ladeindikator
+document.getElementById('content').innerHTML = '<div class="leer">⏳ Inhalte werden geladen …</div>';
+
+fetch('data.json')
+  .then(r => {
+    if (!r.ok) throw new Error('data.json nicht gefunden');
+    return r.json();
+  })
+  .then(data => {
+    DATA = data;
+    render();
+  })
+  .catch(err => {
+    document.getElementById('content').innerHTML =
+      '<div class="leer">⚠️ Inhalte konnten nicht geladen werden.<br>Bitte online öffnen.</div>';
+    console.error(err);
+  });
 </script>
 </body>
 </html>

@@ -434,7 +434,73 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* SCROLLBAR */
+  /* INLINE WIKI-AUFKLAPPER */
+  .aufgabe-wiki-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 8px;
+    background: var(--dunkel3);
+    border: 1px solid var(--grau);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--grau);
+    cursor: pointer;
+    letter-spacing: 0.3px;
+  }
+  .aufgabe-wiki-btn:active { border-color: var(--rot); color: var(--rot); }
+  .aufgabe-wiki-inline {
+    display: none;
+    margin-top: 10px;
+    background: var(--dunkel3);
+    border-left: 3px solid var(--rot);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 15px;
+    color: var(--hell);
+    line-height: 1.6;
+    white-space: pre-line;
+  }
+  .aufgabe-wiki-inline.offen { display: block; }
+  .aufgabe-wiki-schliessen {
+    display: block;
+    margin-top: 10px;
+    background: none;
+    border: none;
+    color: var(--grau);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: right;
+    width: 100%;
+  }
+
+  /* STARTSEITEN-SUCHE */
+  .start-suche-wrap {
+    position: relative;
+    margin-bottom: 4px;
+  }
+  .start-suche {
+    width: 100%;
+    background: var(--dunkel2);
+    border: 2px solid var(--dunkel3);
+    border-radius: var(--radius-gross);
+    padding: 16px 20px;
+    font-size: 18px;
+    color: var(--weiss);
+    outline: none;
+    font-family: inherit;
+  }
+  .start-suche:focus { border-color: var(--rot); }
+  .start-suche::placeholder { color: var(--grau); }
+  .start-suche-ergebnis {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--dunkel3); border-radius: 2px; }
@@ -446,7 +512,7 @@
     <div class="header-logo">FF</div>
     <div>
       <div class="header-title">FF Messel</div>
-      <div class="header-sub">Einsatz-Kurzinfo</div>
+      <div class="header-sub">Rettungshelfer</div>
     </div>
     <div id="header-nav" style="display:none; gap:8px; display:flex; align-items:center;"></div>
   </div>
@@ -620,14 +686,14 @@ const DATA = {
         {
           id: "A", label: "Angriffstrupp",
           aufgaben: [
-            { nr: 1, text: "AUTO-Regel – Fahrzeug erkunden auf alternative Antriebstechnik:", merksatz: "A = Austretende Betriebsstoffe · U = Unterboden erkunden · T = Tankdeckel öffnen · O = Oberfläche absuchen" },
-            { nr: 2, text: "AIRBAG-Regel – Sicherheitssysteme beachten:", merksatz: "A = Abstand halten · I = Innenraum erkunden · R = Rettungskräfte warnen · B = Batteriemanagement · A = Abnehmen Innenverkleidung · G = Gefahren an Komponenten" },
+            { nr: 1, text: "AUTO-Regel – Fahrzeug erkunden auf alternative Antriebstechnik:", merksatz: "A = Austretende Betriebsstoffe · U = Unterboden erkunden · T = Tankdeckel öffnen · O = Oberfläche absuchen", wikiId: "AUTO" },
+            { nr: 2, text: "AIRBAG-Regel – Sicherheitssysteme beachten:", merksatz: "A = Abstand halten · I = Innenraum erkunden · R = Rettungskräfte warnen · B = Batteriemanagement · A = Abnehmen Innenverkleidung · G = Gefahren an Komponenten", wikiId: "AIRBAG" },
             { nr: 3, text: "Sicherheitsabstände: 30 cm Seitenairbag · 60 cm Fahrerairbag · 90 cm Beifahrerairbag", merksatz: null },
             { nr: 4, text: "Patientenkontakt herstellen: Ansprechen, Erstbeurteilung", merksatz: null },
-            { nr: 5, text: "cABCDE-Schema anwenden", merksatz: "c · A · B · C · D · E" },
+            { nr: 5, text: "cABCDE-Schema anwenden", merksatz: "c · A · B · C · D · E", wikiId: "cABCDE" },
             { nr: 6, text: "Rettungsdatenblatt suchen: Sonnenblende Fahrerseite oder QR-Code", merksatz: null },
             { nr: 7, text: "Hydraulisches Rettungsgerät einsetzen wenn vom GF befohlen", merksatz: null },
-            { nr: 8, text: "Übergabe an Rettungsdienst mit SAMPLER", merksatz: null }
+            { nr: 8, text: "Übergabe an Rettungsdienst mit SAMPLER", merksatz: null, wikiId: "SAMPLE" }
           ]
         },
         {
@@ -772,6 +838,8 @@ function render() {
 
 function renderStart(el) {
   el.innerHTML = '';
+
+  // Einsatzstichworte
   el.appendChild(el_('div', { className: 'screen-titel' }, 'Einsatzstichwort wählen'));
 
   DATA.einsaetze.forEach(e => {
@@ -795,6 +863,58 @@ function renderStart(el) {
     <div class="btn-einsatz-pfeil">›</div>`;
   bw.addEventListener('click', () => { state = { screen: 'wiki', einsatzId: null, positionId: null }; render(); });
   el.appendChild(bw);
+
+  // Schnellsuche am Ende
+  el.appendChild(el_('div', { className: 'screen-titel', style: 'margin-top:8px' }, 'Schnellsuche Wiki'));
+  const sucheWrap = document.createElement('div');
+  sucheWrap.className = 'start-suche-wrap';
+  const sucheInput = document.createElement('input');
+  sucheInput.className = 'start-suche';
+  sucheInput.type = 'search';
+  sucheInput.placeholder = '🔍  z.B. Status, cABCDE, Schock …';
+  sucheWrap.appendChild(sucheInput);
+  el.appendChild(sucheWrap);
+  const sucheErgebnis = document.createElement('div');
+  sucheErgebnis.className = 'start-suche-ergebnis';
+  el.appendChild(sucheErgebnis);
+
+  sucheInput.addEventListener('input', () => {
+    const q = sucheInput.value.toLowerCase().trim();
+    sucheErgebnis.innerHTML = '';
+    if (!q) return;
+    const treffer = DATA.wiki.filter(w =>
+      w.titel.toLowerCase().includes(q) ||
+      w.tags.some(t => t.toLowerCase().includes(q)) ||
+      w.inhalt.toLowerCase().includes(q)
+    );
+    if (treffer.length === 0) {
+      sucheErgebnis.appendChild(el_('div', { className: 'leer' }, 'Kein Eintrag gefunden.'));
+      return;
+    }
+    treffer.forEach(w => {
+      const card = document.createElement('div');
+      card.className = 'wiki-eintrag';
+      card.innerHTML = `
+        <div class="wiki-eintrag-header">
+          <div>
+            <div class="wiki-eintrag-titel">${w.titel}</div>
+            <div class="wiki-eintrag-tags">${w.tags.map(t => `<span class="wiki-tag">${t}</span>`).join('')}</div>
+          </div>
+          <div class="wiki-pfeil">›</div>
+        </div>
+        <div class="wiki-inhalt">${w.inhalt}</div>`;
+      const schliessenBtn = document.createElement('button');
+      schliessenBtn.className = 'wiki-schliessen';
+      schliessenBtn.textContent = '∧ Schließen';
+      schliessenBtn.addEventListener('click', () => {
+        card.classList.remove('offen');
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+      card.querySelector('.wiki-inhalt').after(schliessenBtn);
+      card.querySelector('.wiki-eintrag-header').addEventListener('click', () => card.classList.toggle('offen'));
+      sucheErgebnis.appendChild(card);
+    });
+  });
 }
 
 function renderPositionen(el) {
@@ -1013,6 +1133,31 @@ function aufgabeEl(a) {
       <div class="aufgabe-text">${a.text}</div>
       ${a.merksatz ? `<div class="aufgabe-merksatz">▶ ${a.merksatz}</div>` : ''}
     </div>`;
+
+  // Inline Wiki-Aufklapper wenn wikiId vorhanden
+  if (a.wikiId) {
+    const wiki = DATA.wiki.find(w => w.id === a.wikiId);
+    if (wiki) {
+      const inhalt = div.querySelector('.aufgabe-inhalt');
+      const wikiBtn = document.createElement('button');
+      wikiBtn.className = 'aufgabe-wiki-btn';
+      wikiBtn.innerHTML = `ℹ ${wiki.titel}`;
+      const wikiBox = document.createElement('div');
+      wikiBox.className = 'aufgabe-wiki-inline';
+      wikiBox.textContent = wiki.inhalt;
+      const wikiClose = document.createElement('button');
+      wikiClose.className = 'aufgabe-wiki-schliessen';
+      wikiClose.textContent = '∧ Schließen';
+      wikiBox.appendChild(wikiClose);
+      wikiBtn.addEventListener('click', () => wikiBox.classList.toggle('offen'));
+      wikiClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        wikiBox.classList.remove('offen');
+      });
+      inhalt.appendChild(wikiBtn);
+      inhalt.appendChild(wikiBox);
+    }
+  }
   return div;
 }
 
